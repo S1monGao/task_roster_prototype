@@ -1,0 +1,1 @@
+INSERT INTO assigned_member (task_id,user_id) VALUES (?,?);

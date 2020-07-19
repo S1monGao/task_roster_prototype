@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Main Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/modal.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/javascripts/vue.js" defer></script>
+    <script src="/javascripts/ajax.js" defer></script>
+  </head>
+
+  <body onload="get_members();getUsername();get_tasks();getUserInfo()">
+  <div id="vuemain">
+      <nav class="navbar navbar-inverse visible-xs">
+        <div class="container-fluid">
+          <div class="navbar-header">
+          <div class="pull-right centre">
+            <a href="/profile.html"><img src="/images/photo.jpg" alt="Avatar" class="md-avatar" ></a>
+          </div>
+            <button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <p class="navbar-brand">Menu</p>
+          </div>
+
+
+
+          <div class="collapse navbar-collapse" id="myNavbar">
+
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="/index.html">Dashboard</a></li>
+              <li><a href="/group.html">Group</a></li>
+              <li><a href="/profile.html">Profile</a></li>
+              <li><a href="/login.html">Login</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
+
+      <div class="container-fluid main">
+        <div class="row content">
+          <div class="col-sm-3 sidenav hidden-xs">
+            <h2>Menu</h2>
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active"><a href="/index.html">Dashboard</a></li>
+              <li><a href="/group.html">Group</a></li>
+              <li><a href="/profile.html">Profile</a></li>
+              <li><a href="/login.html">Login</a></li>
+            </ul><br>
+          </div>
+          <br>
+
+          <div class="pull-right centre hidden-xs well margright">
+              <a href="/profile.html"><img src="/images/photo.jpg" alt="Avatar" class="md-avatar" ><p>{{username}}</p></a>
+          </div>
+          <br>
+
+
+
+          <div class="well col-sm-8 todo">
+            <h2>TO DO:</h2>
+            <div class="list-group">
+              <a href="#" v-for="task in tasks" onclick="document.getElementById('id01').style.display='block';" v-on:click="targettask=task">
+                <div class="col-sm-9">
+                  <div class="well white">
+                    <h4>{{task.title}}</h4>
+                    <p>{{task.note}}</p>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="well col-sm-8 todo">
+            <h2>Done:</h2>
+            <div class="list-group">
+              <a href="#" onclick="document.getElementById('id01').style.display='block'" v-for="task in dones" v-on:click="targettask=task">
+                <div class="col-sm-9">
+                  <div class="well white">
+                    <h4>{{task.title}}</h4>
+                    <p>{{task.note}}</p>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <br>
+          <a href="/profile.html"><button type="button" class="btn btn-primary btn-lg manage-bt" v-if="!ismanager&&isloggedin" style="margin-left: -1%;">Manage availability</button></a>
+          <a href="/profile.html"><button type="button" class="btn btn-primary btn-lg manage-bt" v-if="!ismanager&&isloggedin" style="margin-left: -1%;">Manage capability</button></a>
+          <button type="button" class="btn btn-primary btn-lg manage-bt" v-if="ismanager&&isloggedin" style="margin-left: -1%;" onclick="document.getElementById('id01').style.display='block'" v-on:click='targettask=null'>Add new Task</button>
+          <button type="button" class="btn btn-primary btn-lg manage-bt" v-if="ismanager&&isloggedin" style="margin-left: -1%;" onclick="document.getElementById('id03').style.display='block'">Group Tasks</button>
+
+
+          <!-- The Modal (contains the Edit task form) -->
+          <div>
+            <div id="id01" class="modal">
+              <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close">&times;</span>
+              <form class="modal-content" action="/users/edittask" method="post">
+                <div class="container4">
+                  <h1>Task</h1>
+                  <p>{{bla}} task details.</p>
+                  <hr>
+
+                  <input type="hidden" name="tid" id="tid" v-bind:value='t_id_form'>
+
+                  <label for="title"><b>Title</b></label>
+                  <input type="text" placeholder="Enter Title" name="title" :readonly="!ismanager" v-bind:value="getdataskttl" required>
+
+                  <label for="note"><b>Note</b></label>
+                  <input type="text" placeholder="Enter Note" name="note" :readonly="!ismanager" v-bind:value="getdatasknote" required>
+
+                  <label for="deadline"><b>Deadline</b></label>
+                  <input type="date" id="deadline" name="deadline" :readonly="!ismanager" v-bind:value="getdataskddl" required>
+
+                  <label for="assimember"><b>Assign Member</b></label>
+                  <div id="assimember" class="well">
+                    <div v-for="member in members.marr">
+                      <input type="checkbox" :disabled="!ismanager" v-bind:value="member.username" name="member" style="width:15px" >
+                      <label for="member" >{{member.username}}</label> <button type="button" class="btn btn-primary btn-sm vpbt" v-on:click="view_profile(member.id)">View Profile</button>
+                    </div>
+                  </div>
+
+
+
+                  <label for="status"><b>Done?</b></label>
+                  <input type="checkbox" id="status" name="status" style="width:15px">
+
+
+
+                  <div class="clearfix">
+                    <button type="submit" class="signupbtn mbutton" style="width:100%" >Confirm</button>
+                    <button type="button" v-on:click="del_task()" class="cancelbtn mbutton" v-if="(targettask!==null)&&ismanager" style="width:100%">Delete Task</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+
+
+          <!-- The Modal (contains the Group task form) -->
+          <div>
+            <div id="id03" class="modal">
+              <span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close">&times;</span>
+              <form class="modal-content" action="#">
+                <div class="container4">
+                  <h1>Group tasks</h1>
+                  <p>Group task and assign.</p>
+                  <hr>
+                  <label for="name"><b>Name</b></label>
+                  <input type="text" placeholder="Enter Name" name="name" id="name" required>
+                  <label for="tasks"><b>Tasks</b></label>
+                  <div id="tasks" class="well">
+                    <div v-for="task in tasks">
+                      <input type="checkbox" :disabled="!ismanager" value="task.title" name="task.title" style="width:15px">
+                      <label for="task">{{task.title}}</label><p>{{task.note}}</p>
+                    </div>
+                  </div>
+
+                  <label for="assimember"><b>Assign Member</b></label>
+                  <div id="assimember" class="well">
+                    <div v-for="member in members">
+                      <input type="checkbox" :disabled="!ismanager" value="member" name="member" style="width:15px">
+                      <label for="member">{{member}}</label>
+                    </div>
+                  </div>
+
+
+                  <div class="clearfix">
+                    <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn mbutton">Cancel</button>
+                    <button type="submit" class="signupbtn mbutton">Confirm</button>
+                  </div>
+
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

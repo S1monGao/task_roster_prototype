@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/modal.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/javascripts/vue.js" defer></script>
+    <script src="/javascripts/ajax.js" defer></script>
+  </head>
+  <body onload="getUserInfo()">
+    <nav class="navbar navbar-inverse visible-xs">
+      <div class="container-fluid">
+        <div class="navbar-header">
+        <div class="pull-right centre">
+          <a href="/profile.html"><img src="/images/photo.jpg" alt="Avatar" class="md-avatar" ><p class="cwhite hidden-xs">{{username}}</p></a>
+        </div>
+          <button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <p class="navbar-brand">Menu</p>
+        </div>
+
+
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+
+          <ul class="nav navbar-nav">
+            <li><a href="/index.html">Dashboard</a></li>
+            <li><a href="/group.html">Group</a></li>
+            <li><a href="/profile.html">Profile</a></li>
+            <li class="active"><a href="/login.html">Login</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+
+
+    <div class="container-fluid main " id="vuemain" >
+      <div class="row content">
+        <div class="col-sm-3 sidenav hidden-xs">
+          <h2>Menu</h2>
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="/index.html">Dashboard</a></li>
+            <li><a href="/group.html">Group</a></li>
+            <li><a href="/profile.html">Profile</a></li>
+            <li class="active"><a href="/login.html">Login</a></li>
+          </ul><br>
+        </div>
+        <br>
+
+
+
+        <div class="container3 mr1p nomgr" v-if="!isloggedin">
+
+            <div class="row">
+              <h1 style="text-align:center">Login Portal</h1>
+              <div class="vl">
+                <span class="vl-innertext">or</span>
+              </div>
+
+              <div class="col">
+                <a href="#" class="fb btn">
+                  <i class="fa fa-facebook fa-fw"></i> Login with Facebook
+                 </a>
+                <a href="#" class="twitter btn">
+                  <i class="fa fa-twitter fa-fw"></i> Login with Twitter
+                </a>
+                <a href="#" class="google btn"><i class="fa fa-google fa-fw">
+                  </i> Login with Google+
+                </a>
+              </div>
+
+              <div class="col">
+                <div class="hide-md-lg">
+                  <p>Or sign in manually:</p>
+                </div>
+
+                <input type="text" v-model="lemail" name="email" placeholder="Email" style="background-color:white" required>
+                <input type="password" v-model="lpwd" name="password" placeholder="Password" style="background-color:white" required>
+                <button class="loginbt" v-on:click="login()">Login</button>
+              </div>
+
+            </div>
+
+        </div>
+
+        <div class="bottom-container bgdarkblue mr1p nomgr" v-if="!isloggedin">
+          <div class="row">
+            <div class="col">
+              <a href="#" style="color:white" class="btn" onclick="document.getElementById('id01').style.display='block'">Sign up</a>
+            </div>
+            <div class="col">
+              <p style="color:white;cursor: not-allowed;"  class="btn">Forgot password?</p>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div id="id01" class="modal">
+          <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close">&times;</span>
+
+            <div class="container4 modal-content">
+              <h1>Sign Up</h1>
+              <p>Please fill in this form to create an account.</p>
+              <hr>
+
+              <label for="email"><b>Email</b></label>
+              <input type="text" placeholder="Enter Email" name="email" id="email" v-model="remail" required>
+
+              <label for="pwd"><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" name="pwd" id="pwd" v-model="rpwd" required>
+
+              <label for="usn"><b>Displayed Name</b></label>
+              <input type="text" placeholder="Enter Displayed Name" name="usn" id="usn" v-model="rname" required>
+
+              <label>
+              <input type="checkbox" checked="checked" name="rism" style="width:20px;" v-model="rismanager"> I am manager
+              </label>
+
+              <div class="clearfix">
+                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn mbutton">Cancel</button>
+                <button type="submit" class="signupbtn mbutton" v-on:click="register()">Sign Up</button>
+              </div>
+            </div>
+
+        </div>
+
+
+      </div>
+    </div>
+
+    <script>
+    // Get the modal
+    var modal = document.getElementById('id01');
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+    </script>
+
+  </body>
+</html>

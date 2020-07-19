@@ -1,0 +1,1 @@
+INSERT INTO task (title,note,deadline,status) VALUES (?,?,?,?);

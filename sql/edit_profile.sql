@@ -1,0 +1,1 @@
+UPDATE profile SET name=?,age=?,gender=?,company=company,capability=capability,avail_from=?,avail_to=? WHERE user_id=?;

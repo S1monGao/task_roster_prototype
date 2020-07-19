@@ -1,0 +1,1 @@
+select * from profile where user_id=?;
